@@ -33,7 +33,10 @@ func main() {
 	// Create a Gin router with default middleware (logger and recovery)
 	r := gin.Default()
 
-
+	// Create a default DoS engine
+	dos_engine := AntiDoS.DefaultDoSEngine() 
+    // Use the handler
+	r.Use(dos_engine.AntiDoSHandler())
 
 	// Define a simple GET endpoint
 	r.GET("/ping", func(c *gin.Context) {
@@ -46,10 +49,6 @@ func main() {
 		"message": "pong",
 		})
 	})
-	// Create a default DoS engine
-	dos_engine := AntiDoS.DefaultDoSEngine() 
-    // Use the handler
-	r.Use(dos_engine.AntiDoSHandler())
 
 	// Start server on port 8080 (default)
 	// Server will listen on 0.0.0.0:8080 (localhost:8080 on Windows)
@@ -77,6 +76,10 @@ func main() {
 	// Create a Gin router with default middleware (logger and recovery)
 	r := gin.Default()
 
+	// Create a DoS engine with 50 max requests, 20 minutes of ban time and 5 seconds of refresh time
+	dos_engine := AntiDoS.CreateDoSEngine(50, 20*Time.Minute, 5*Time.Second) 
+	// Use the handler
+	r.Use(dos_engine.AntiDoSHandler())
 
 
 	// Define a simple GET endpoint
@@ -90,9 +93,6 @@ func main() {
 		"message": "pong",
 		})
 	})
-	// Create a DoS engine with 50 max requests, 20 minutes of ban time and 5 seconds of refresh time
-	dos_engine := AntiDoS.createDoSEngine(50, 20*Time.Minute, 5*Time.Second) 
-	r.Use(dos_engine.AntiDoSHandler())
 
 	// Start server on port 8080 (default)
 	// Server will listen on 0.0.0.0:8080 (localhost:8080 on Windows)
