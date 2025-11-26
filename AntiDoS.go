@@ -37,7 +37,7 @@ func DefaultDoSEngine() *Engine {
 	}
 }
 
-func createDoSEngine(max_requests int, ban_time, refresh_time time.Duration) *Engine {
+func CreateDoSEngine(max_requests int, ban_time, refresh_time time.Duration) *Engine {
 	return &Engine{
 		max_requests:    max_requests,
 		ban_time:        ban_time,
@@ -82,7 +82,7 @@ func (d *Engine) AntiDoSHandler() gin.HandlerFunc {
 
 func (d *Engine) RequestsHandler(IP string) {
 	d.current_IPs_sem.Lock()
-	value, _ := d.current_IPs[IP]
+	value := d.current_IPs[IP]
 	d.current_IPs_sem.Unlock()
 	if value == nil {
 		return
@@ -98,10 +98,10 @@ func (d *Engine) RequestsHandler(IP string) {
 		d.blacklist_sem.RUnlock()
 		d.current_IPs_sem.Lock()
 		if value.requests == 0 {
-			dont_changed_counter = 0
+			dont_changed_counter++
 		} else if value.requests <= d.max_requests {
 			value.requests = 0
-			dont_changed_counter++
+			dont_changed_counter = 0
 		}
 		if dont_changed_counter == 4 {
 			delete(d.current_IPs, IP)
