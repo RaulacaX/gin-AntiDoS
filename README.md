@@ -40,10 +40,6 @@ func main() {
 
 	// Define a simple GET endpoint
 	r.GET("/ping", func(c *gin.Context) {
-        // Check if response is already written by the AntiDoS middleware
-		if c.Writer.Written() {
-			return
-		}
 		// Return JSON response
 		c.JSON(http.StatusOK, gin.H{
 		"message": "pong",
@@ -84,10 +80,6 @@ func main() {
 
 	// Define a simple GET endpoint
 	r.GET("/ping", func(c *gin.Context) {
-        // Check if response is already written by the AntiDoS middleware
-		if c.Writer.Written() {
-			return
-		}
 		// Return JSON response
 		c.JSON(http.StatusOK, gin.H{
 		"message": "pong",

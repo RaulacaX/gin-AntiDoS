@@ -56,6 +56,7 @@ func (d *Engine) AntiDoSHandler() gin.HandlerFunc {
 		if _, exists := d.blacklist[client_ip]; exists {
 			c.JSON(http.StatusUnauthorized, gin.H{"reason": "You Did too many requests"})
 			d.blacklist_sem.RUnlock()
+			c.Abort()
 			return
 		}
 		d.blacklist_sem.RUnlock()
@@ -73,6 +74,7 @@ func (d *Engine) AntiDoSHandler() gin.HandlerFunc {
 				d.current_IPs_sem.Unlock()
 				client_data.o.Do(func() { d.ban_IP(client_ip) })
 				c.JSON(http.StatusUnauthorized, gin.H{"reason": "You Did too many requests"})
+				c.Abort()
 				return
 			}
 		}
